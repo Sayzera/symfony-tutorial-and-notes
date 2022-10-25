@@ -24,16 +24,23 @@ class User
     #[ORM\OneToOne(inversedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Address $address = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'users')]
-    private ?self $followed = null;
 
-    #[ORM\OneToMany(mappedBy: 'followed', targetEntity: self::class)]
     private Collection $users;
+
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'following')]
+    private Collection $followed;
+
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followed')]
+    private Collection $following;
+
+
 
     public function __construct()
     {
         $this->videos = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->followed = new ArrayCollection();
+        $this->following = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -95,17 +102,6 @@ class User
         return $this;
     }
 
-    public function getFollowed(): ?self
-    {
-        return $this->followed;
-    }
-
-    public function setFollowed(?self $followed): self
-    {
-        $this->followed = $followed;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, self>
@@ -119,7 +115,6 @@ class User
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->setFollowed($this);
         }
 
         return $this;
@@ -129,9 +124,58 @@ class User
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($user->getFollowed() === $this) {
-                $user->setFollowed(null);
-            }
+
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowed(): Collection
+    {
+        return $this->followed;
+    }
+
+    public function addFollowed(self $followed): self
+    {
+        if (!$this->followed->contains($followed)) {
+            $this->followed->add($followed);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowed(self $followed): self
+    {
+        $this->followed->removeElement($followed);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    public function addFollowing(self $following): self
+    {
+        if (!$this->following->contains($following)) {
+            $this->following->add($following);
+            $following->addFollowed($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(self $following): self
+    {
+        if ($this->following->removeElement($following)) {
+            $following->removeFollowed($this);
         }
 
         return $this;

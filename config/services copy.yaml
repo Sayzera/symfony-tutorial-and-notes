@@ -11,8 +11,8 @@ services:
   _defaults:
     autowire: true # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-    # bind:
-    #  $globalParams: 'Tüm servislerden erişilebilir'
+    bind:
+      $globalParams: 'Tüm servislerden erişilebilir'
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
@@ -28,18 +28,7 @@ services:
 
   # servislerin construct metodlarına parametre gönderir buradaki isimle constructorın içindeki parametre adı aynı olmalı
   App\Services\MyService:
-    # autowire: false # otomatik injeksiyon yöntemi açık olursa burada parametre göndermeye gerek yok
     arguments:
-      # $param: 'Some Parameter'
-      # $param2: 'Some Parameter2'
-      # $adminEmail: '%admin_email%'
-      # $second_service: '@App\Services\MySecondService' # servisler arası bağlantı
-    public: true # servislerin public olması gerekiyor
-    tags:
-      - { name: 'doctrine.event_listener', event: 'postFlush' } # servisleri event listener olarak kullanmak için
-      ## ne zaman plush methodu kullanılırsa bu servis çalışır
-      - { name: 'kernel.cache_clear' } # servisleri cache temizleme işlemleri için kullanmak için
-
-  App\Services\MySecondService:
-    lazy: true # servis kullanılmadığı sürece yüklenmez
-
+      $param: 'Some Parameter'
+      $param2: 'Some Parameter2'
+      $adminEmail: '%admin_email%'

@@ -55,6 +55,19 @@ class UserRepository extends ServiceEntityRepository
         return $resultSet->fetchAllAssociative();
     }
 
+    public function findWithVideos(int $id): ?User
+    {
+        $query = $this->createQueryBuilder('u')
+            ->leftJoin('u.videos', 'v')
+            ->addSelect('v') // SELECT u, v FROM User u LEFT JOIN u.videos v
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $query;
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

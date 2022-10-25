@@ -246,4 +246,23 @@ class UserController extends AbstractController
         // });
         return new Response('Address created');
     }
+
+
+    /**Query Builder  */
+    #[Route('/query/builder', name: 'app_query_builder')]
+    public function queryBuilder()
+    {
+        $data =   $this->user->findWithVideos(6);
+
+        dump(1234);
+
+        foreach ($data->getVideos() as $video) {
+            echo $video->getTitle() . '<br>';
+        }
+
+
+        return $this->render('user/index.html.twig', [
+            'controller_name' => 'UserController',
+        ]);
+    }
 }
