@@ -12,14 +12,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\ItemInterface;
-
+use App\EventListener\VideoCreatedListener;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DefaultController extends AbstractController
 {
+
     public  $entityManager;
-    public function __construct(ManagerRegistry $doctrine)
+    public function __construct(ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
         $this->entityManager = $doctrine->getManager();
+        $this->entityManager = $doctrine->getManager();
+
+
+        $this->dispatcher = $eventDispatcher;
+    }
+
+
+    #[Route('/default4', name: 'default4')]
+    public function default4(): Response
+    {
+
+        $video = new \stdClass();
+        $video->title = 'Video Title';
+        $video->description = 'Video Description';
+
+        $event = new VideoCreatedListener($video);
+        $this->dispatcher->dispatch($event, 'video.created.event');
+
+        return $this->render('default/index.html.twig', [
+            'controller_name' => 'DefaultController',
+        ]);
     }
 
 
