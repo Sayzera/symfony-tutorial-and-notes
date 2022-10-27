@@ -16,5 +16,24 @@
         <li>Your controller at <code><a href="{{ '/Users/sezerboluk/Desktop/symfony_6_1/src/Controller/DefaultController.php'|file_link(0) }}">src/Controller/DefaultController.php</a></code></li>
         <li>Your template at <code><a href="{{ '/Users/sezerboluk/Desktop/symfony_6_1/templates/default/index.html.twig'|file_link(0) }}">templates/default/index.html.twig</a></code></li>
     </ul>
+
+    {{dump(path('logout'))}}
+    {% if app.user %}
+    <a href="{{ path('logout') }}">Logout</a>
+    {% endif %}
+
+
+    {# Rolu admin mi #}
+    {% if is_granted('ROLE_USER') %}
+    <h1>User</h1>
+    {% endif %}
+
+        {# Giriş Yapmıs mı   #}
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+    <h1>IS_AUTHENTICATED_FULLY {{app.user.email}}</h1>
+    {% endif %}
+
+
+    
 </div>
 {% endblock %}
